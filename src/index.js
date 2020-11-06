@@ -45,7 +45,7 @@ app.set("views", path.join(__dirname, "./views"));
 app.get("/", (request, response) => {
     response.status(200).render("login.hbs", {
       layout: "hero.hbs",
-      title: "Home",
+      title: "Login",
       action: "/login",
       method: "POST"
     });
@@ -83,7 +83,7 @@ app.post("/login", async  (request, response) => {
 app.get("/form",auth, (request, response) => {
     response.status(200).render("form.hbs", {
       layout: "hero.hbs",
-      title: "Home",
+      title: "Form",
       action: "/user",
       method: "POST"
     });
