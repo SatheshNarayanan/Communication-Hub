@@ -1,0 +1,165 @@
+<body>
+  <form class="container my-5" id="mail-form" action="{{action}}" method="{{method}}" _method="{{method}}">
+
+    <div class="row">
+      <div class="form-group col-lg-4">
+        <label for="sendVia" class=" my-1 text-center">Send Via</label>
+        <select class="form-control " id="sendVia" name="sendVia">
+          <option value="SMS">SMS</option>
+          <option value="Email">Email</option>
+        </select>
+      </div>
+
+      <div class="form-group col-lg-4">
+        <label for="dataSource" class=" my-1 text-center">Data Source</label>
+        <select class="form-control " id="dataSource" name="dataSource">
+          <option>Edit here</option>
+          <option>RDBMS</option>
+        </select>
+      </div>
+      <div class="col-lg-1"></div>
+      <a href="/schedule" class="col-lg-1 my-2"> Schedule </a>
+      <div class="col-lg-1"></div>
+      <a href="/logout" class="col-lg-1 my-2"> Logout </a>
+
+    </div>
+
+    <div class="form-group" id="rdbmsHide">
+      <label for="To">To</label>
+      <input type="text" class="form-control " id="To" name="To" placeholder="Email/Phone Number">
+      <div class="invalid-feedback"> Please enter sending email address or Phone Number </div>
+    </div>
+
+    <div id="rdbmsVisi" style="display: none">
+      <div class="form-group" id="rdbmsHide">
+        <label for="connectionString">Connection string</label>
+        <input type="text" name="connectionString" class="form-control" id="connectionSting"
+          placeholder="To connect to RDBMS">
+      </div>
+
+      <div class="form-group ">
+        <label for="query">Query</label>
+        <textarea rows="6" class="form-control" id="query" name="query" placeholder=Query for getting data from
+          rdbms></textarea>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="formGroupExampleInput">Subject</label>
+      <input type="text" class="form-control" id="subject" name="subject" placeholder="subject">
+    </div>
+    
+    <div class="form-group ">
+        <label for="template" class=" my-1 text-center">Template</label>
+        <select class="form-control " id="template" name="template">
+          <option value="none" >None</option>
+          <option value="sms1" >SMS Template 1</option>
+          <option value="sms2" >SMS Template 2</option>
+          <option value="mail1">Mail Template 1</option>
+          <option value="mail2">Mail Template 2</option>
+        </select>
+    </div>
+
+    <div class="form-group ">
+      <label for="body">Body</label>
+      <textarea rows="10" class="form-control" id="body" name="body"
+        placeholder="Content that you wanna send"></textarea>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-4"></div>
+      <button type="submit" class=" btn btn-primary my-2 mx-2">Start Sending</button>
+      <div class="col-lg-2"></div>
+      <button type="button" class="  btn btn-success my-2 mx-2">Save</button>
+      <div class="col-lg-2"></div>
+    </div>
+  </form>
+
+  <script>
+
+    const dataSource = document.getElementById("dataSource")
+    const template = document.getElementById("template")
+    const tempData = {
+      'sms1' : "Peekaboo and Im gonna spam you...",
+      'sms2' : "I want to spam you",
+      'mail1': "Dear Someone, lets have a meeting",
+      'mail2': "Hello, I dont have any content",
+      "none" : ""
+    }
+
+    template.addEventListener("change", () => {
+      document.getElementById("body").innerHTML= tempData[template.value]
+    })
+
+    dataSource.addEventListener("change", () => {
+      if (dataSource.value === 'RDBMS') {
+        const remove = document.getElementById("rdbmsHide")
+        remove.setAttribute("style", "display: none;")
+        const add = document.getElementById("rdbmsVisi")
+        add.setAttribute("style", "display: block;")
+      } else {
+        const remove = document.getElementById("rdbmsHide")
+        remove.setAttribute("style", "display: block;")
+        const add = document.getElementById("rdbmsVisi")
+        add.setAttribute("style", "display: none;")
+      }
+    })
+
+    const $mailform = document.querySelector("#mail-form");
+
+    $mailform.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const To = document.getElementById('To')
+
+      if (To.value.length < 1) {
+        To.setAttribute("class", "form-control is-invalid")
+        return false;
+      }
+      const submitUrl = $mailform.action;
+      const submitMethod = $mailform.getAttribute("_method");
+      const formData = new FormData($mailform);
+      let userDetail = {};
+      for (const fields of formData.entries()) {
+        const [key, value] = fields;
+        userDetail[key] = value;
+      }
+
+      const config = {
+        method: submitMethod.toUpperCase(),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userDetail)
+      }
+
+      console.log(config, submitUrl)
+      fetch(submitUrl, config)
+        .then(response => {
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            throw (new Error(response.status))
+          }
+        }
+        ).then(data => {
+          //alert(data.message)
+          swal("Success", "The Message has been sent", "success");
+        })
+        .catch(error => {
+          switch (error.message) {
+            case "400":
+              swal("Warning", "Please check form values", "warning");
+              break;
+            case "500":
+              swal("Error", "Please try after some time", "error");
+              break;
+            default:
+              console.log(error);
+          }
+        })
+    });
+
+  </script>
+</body>
