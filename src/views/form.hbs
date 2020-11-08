@@ -5,16 +5,16 @@
       <div class="form-group col-lg-4">
         <label for="sendVia" class=" my-1 text-center">Send Via</label>
         <select class="form-control " id="sendVia" name="sendVia">
-          <option value="SMS"  {{#if (ifEquality data.sendvia "SMS")}} selected {{/if}}>SMS</option>
-          <option value="Email" {{#if (ifEquality data.sendvia "Email")}} selected {{/if}}>Email</option>
+          <option value="SMS"  {{#if (ifEquality data.sendVia "SMS")}} selected {{/if}}>SMS</option>
+          <option value="Email" {{#if (ifEquality data.sendVia "Email")}} selected {{/if}}>Email</option>
         </select>
       </div>
 
       <div class="form-group col-lg-4">
         <label for="dataSource" class=" my-1 text-center">Data Source</label>
         <select class="form-control " id="dataSource" name="dataSource">
-          <option value="Edit here" {{#if (ifEquality data.datasource "Edit here")}} selected {{/if}}>Edit here</option>
-          <option value="RDBMS" {{#if (ifEquality data.datasource "RDBMS")}} selected {{/if}}>RDBMS</option>
+          <option value="Edit here" {{#if (ifEquality data.dataSource "Edit here")}} selected {{/if}}>Edit here</option>
+          <option value="RDBMS" {{#if (ifEquality data.dataSource "RDBMS")}} selected {{/if}}>RDBMS</option>
         </select>
       </div>
       <div class="col-lg-1"></div>
@@ -23,19 +23,19 @@
       <a href="/logout" class="col-lg-1 my-2"> Logout </a>
 
     </div>
-    {{#if (ifEquality data.datasource "Edit here")}}
+    {{#if (ifEquality data.dataSource "Edit here")}}
     <div class="form-group" id="rdbmsHide">
       <label for="To">To</label>
-      <input type="text" class="form-control " id="To" name="To" placeholder="Email/Phone Number" value="{{data.to}}">
+      <input type="text" class="form-control " id="To" name="To" placeholder="Email/Phone Number" value="{{data.To}}">
       <div class="invalid-feedback"> Please enter sending email address or Phone Number </div>
     </div>
     {{/if}}
 
   
-    <div id="rdbmsVisi" {{#if (ifEquality data.datasource "Edit here")}} style="display: none" {{/if}}>
+    <div id="rdbmsVisi" {{#if (ifEquality data.dataSource "Edit here")}} style="display: none" {{/if}}>
       <div class="form-group" id="rdbmsHide">
         <label for="connectionString">Connection string</label>
-        <input type="text" name="connectionString" class="form-control" id="connectionSting" value="{{data.connectionstring}}"
+        <input type="text" name="connectionString" class="form-control" id="connectionSting" value="{{data.connectionString}}"
           placeholder="To connect to RDBMS">
       </div>
 
