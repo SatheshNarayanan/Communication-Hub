@@ -1,0 +1,38 @@
+<div class="container my-5">
+  <h1>{{heading}}</h1>
+  <table class="table my-5">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Schedule id</th>
+        <th scope="col">Status</th>
+        <th scope="col">Repeat</th>
+        <th scope="col">Time</th>
+        <th scope="col">Activate</th>
+        <th scope="col">Deactivate</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each data}}
+      <tr>
+        <td> <a href="/editSchedule/{{this.id}}">{{this.schedulename}}</a></td>
+        <td>{{this.status}}</td>
+        <td> 
+        <select class="form-control " id="repeat" name="repeat">
+          <option value="everyDay" {{#if (ifEquality this.repeat "everyDay")}} selected {{/if}}>Every Day</option>
+          <option value="everyMinute" {{#if (ifEquality this.repeat "everyMinute")}} selected {{/if}}>Every Minute</option>
+        </select>
+      </td>
+        <td>
+          <input type="time" class="form-control" id="apptime" name="apptime" value={{this.time}}>
+        </td>
+        <td>
+            <button type="button" class="btn btn-primary">Activate</button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger">Deactivate</button>
+        </td>
+      </tr>
+        {{/each}}
+    </tbody>
+  </table> 
+</div>
