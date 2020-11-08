@@ -98,7 +98,7 @@ app.post("/login", async  (request, response) => {
 //form for getting data 
 app.get("/form",auth, (request, response) => {
     response.status(200).render("form.hbs", {
-      layout: "hero.hbs",
+      layout: "navItem.hbs",
       title: "Form",
       action: "/user",
       method: "POST",
@@ -112,7 +112,7 @@ app.get("/form",auth, (request, response) => {
     const { id } = result[0]
     const data = await getScheduleData(id)
     response.status(200).render("schedule.hbs", {
-      layout: "hero.hbs",
+      layout: "navItem.hbs",
       title: "Schedule",
       action: "/user",
       method: "POST",
@@ -160,8 +160,8 @@ app.get("/form",auth, (request, response) => {
     const data = await getScheduleDetailData(id)
     console.log(data)
     response.status(200).render("form.hbs", {
-      layout: "hero.hbs",
-      title: "Edit Schedule",
+      layout: "navItem.hbs",
+      title: "Schedule",
       action: "/user",
       method: "POST",
       data : data[0]
