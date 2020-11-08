@@ -30,14 +30,14 @@ const auth = require("./middlewares/auth");
 const getScheduleData = require("./database/query/getSchedule");
 const getScheduleDetailData = require("./database/query/getScheduleDetail");
 const userDB = require("./database/config/config");
-const taskCheck = require("./schedule/Job")
+//const taskCheck = require("./schedule/Job")
 
 const app = express();
 
 // userSeeder();
 // customerSeeder();
- scheduleSeeder();
-scheduleDetilSeeder();
+ //scheduleSeeder();
+//scheduleDetilSeeder();
 //taskCheck.start();
 app.use(cookieParser());
 app.use(bodyparser.json());
@@ -125,26 +125,32 @@ app.get("/form",auth, (request, response) => {
       const {email} = verify(request.cookies.jwt)
       const result = await getUser(email);
       let { id, firstName } = result[0]
-      const data = await userDB.query(`select max(id) from schedule_infos where userid = ${id}`, { type: QueryTypes.SELECT })
-      let max = data[0].max === null ? 1 : (data[0].max+1)
-      delete request.body.template
-      if ( hiddenSchedule === ""){
-          const headerData =  {
-                  schedulename: `${firstName}_sch_${max}`,
-                  status: "disabled",
-                  repeat: "everyDay",
-                  time: "12:00 PM",
-                  userid: id
-                }
-                const headerInsert = await scheduleHeader.create(headerData);
-                const {id : scheduleid} = headerInsert
-                const detailData = { ...request.body,scheduleid }
-                console.log(detailData)
-                const detailInsert = await scheduleDetail.create(detailData);
-                console.log(headerInsert.get(),detailInsert.get())
-      } else {
-            const detailInsert = await scheduleDetail.update({ ...request.body,scheduleid : hiddenSchedule }, { where: { scheduleid: hiddenSchedule } });
-            console.log(detailInsert)
+       try {
+        const data = await userDB.query(`select max(id) from schedule_infos where userid = ${id}`, { type: QueryTypes.SELECT })
+              let max = data[0].max === null ? 1 : (data[0].max+1)
+              delete request.body.template
+              if ( hiddenSchedule === ""){
+                  const headerData =  {
+                          schedulename: `${firstName}_sch_${max}`,
+                          status: "disabled",
+                          repeat: "everyDay",
+                          time: "12:00 PM",
+                          userid: id
+                        }
+                        const headerInsert = await scheduleHeader.create(headerData);
+                        const {id : scheduleid} = headerInsert
+                        const detailData = { ...request.body,scheduleid }
+                        console.log(detailData)
+                        const detailInsert = await scheduleDetail.create(detailData);
+                        console.log(headerInsert.get(),detailInsert.get())
+              } else {
+                    const detailInsert = await scheduleDetail.update({ ...request.body,scheduleid : hiddenSchedule }, { where: { scheduleid: hiddenSchedule } });
+                    console.log(detailInsert)
+              }
+              response.status(200).send({"message":"Date inserted or updated successfully"})
+      } catch (e) {
+        console.log(e)
+        response.status(400).send({"message": "Cannot insert or update"})
       }
      
   });
